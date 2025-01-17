@@ -1,0 +1,13 @@
+package com.sipe.mailSync;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class MailSyncApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(MailSyncApplication.class, args);
+	}
+
+}
