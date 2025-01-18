@@ -1,5 +1,6 @@
 package com.sipe.mailSync.oauth2;
 
+import com.sipe.mailSync.oauth2.infra.GoogleToken;
 import com.sipe.mailSync.user.domain.User;
 import com.sipe.mailSync.user.infra.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
+import java.util.Optional;
 
 @Transactional
 @RequiredArgsConstructor
@@ -54,18 +56,26 @@ public class OAuth2Service {
                 String.class
         );
 
-        log.info("발행성공 {}" ,response );
+        log.info("발행성공 {}", response);
     }
 
-    public void saveGoogleToken(AccessTokenResponse accessTokenResponse){
+    public void saveGoogleToken(AccessTokenResponse accessTokenResponse) {
         String email = getEmail(accessTokenResponse.getIdToken());
+
         User user = userRepository.findByEmail(email)
-                .orElseThrow(()->new RuntimeException("email not found"));
-        oAuth2Repository.save(accessTokenResponse.toEntity(email, user.getId()));
+                .orElseThrow(() -> new RuntimeException("email not found"));
+
+        Optional<GoogleToken> googleToken = oAuth2Repository.findByEmail(email);
+        if (googleToken.isPresent()) {
+            GoogleToken token = googleToken.get();
+            token.updateAccessToken(accessTokenResponse.getAccessToken());
+        } else {
+            oAuth2Repository.save(accessTokenResponse.toEntity(email, user.getId()));
+        }
     }
 
     public String getAccessTokenByEmail(String email) {
-        var response = oAuth2Repository.findByEmail(email).orElseThrow(()->new RuntimeException("email not found"));
+        var response = oAuth2Repository.findByEmail(email).orElseThrow(() -> new RuntimeException("email not found"));
         return response.getAccessToken();
     }
 }
