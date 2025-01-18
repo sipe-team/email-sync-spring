@@ -11,6 +11,7 @@ public class MessageController {
 
     @PostMapping
     public void message(@RequestBody MessageRequest request) {
+        //TODO ai
         System.out.println(request);
     }
 }

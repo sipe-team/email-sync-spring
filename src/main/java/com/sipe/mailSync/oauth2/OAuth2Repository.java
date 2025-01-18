@@ -1,21 +1,11 @@
 package com.sipe.mailSync.oauth2;
 
-import org.springframework.stereotype.Repository;
+import com.sipe.mailSync.oauth2.infra.GoogleToken;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Optional;
 
-@Repository
-public class OAuth2InMemoryRepository {
+public interface OAuth2Repository extends JpaRepository<GoogleToken, String> {
 
-    public final Map<String, AccessTokenResponse> map = new HashMap<>();
-
-    public void put(String email, AccessTokenResponse accessTokenResponse) {
-        map.put(email, accessTokenResponse);
-    }
-
-    public AccessTokenResponse get(String email) {
-        return map.get(email);
-    }
-
+    Optional<GoogleToken> findByEmail(String email);
 }
