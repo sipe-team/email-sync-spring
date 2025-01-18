@@ -8,4 +8,5 @@ import java.util.Optional;
 public interface OAuth2Repository extends JpaRepository<GoogleToken, String> {
 
     Optional<GoogleToken> findByEmail(String email);
+    boolean existsByEmail(String email);
 }

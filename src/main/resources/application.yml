@@ -37,5 +37,37 @@ app:
   client-id: ${GMAIL_CLIENT}
   client-secret: ${GMAIL_SECRET}
 
+webclient:
+  connection:
+    timeout:
+      millisecond: 100000
+    provider:
+      name: postmanProvider
+      max:
+        connections: 1000
+      pending:
+        acquire:
+          max:
+            count: -1
+          timeout:
+            second: 100
+  read:
+    timeout:
+      second: 100
+  write:
+    timeout:
+      second: 100
+  provider:
+    max:
+      in:
+        meroty:
+          size:
+            of:
+              byte: 52428800
+  block:
+    timeout:
+      of:
+        millis: 100000
+
 openapi:
-  key: ${OPENAPI_KEY}
+  key: ${OPEN_API_KEY}

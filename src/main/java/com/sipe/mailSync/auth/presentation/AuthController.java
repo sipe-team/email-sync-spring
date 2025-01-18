@@ -2,18 +2,21 @@ package com.sipe.mailSync.auth.presentation;
 
 import com.sipe.mailSync.auth.application.AuthService;
 import com.sipe.mailSync.auth.dto.LoginRequest;
+import com.sipe.mailSync.auth.dto.MeResponse;
 import com.sipe.mailSync.auth.dto.RegisterRequest;
 import com.sipe.mailSync.auth.dto.RegisterResponse;
+import com.sipe.mailSync.security.dto.CustomUserDetail;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("api/auth")
@@ -38,6 +41,15 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<?> getUser() {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(authService.getStatus());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 }

@@ -2,8 +2,6 @@ package com.sipe.mailSync.oauth2.kakao;
 
 import com.sipe.mailSync.oauth2.AccessTokenResponse;
 import com.sipe.mailSync.user.infra.UserRepository;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -64,14 +63,14 @@ public class OAuth2KakaoController {
     String accessToken = accessTokenResponse.getAccessToken();
     log.info(accessToken);
 
-   MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+    MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
     body.add("property_keys", "[\"kakao_account.email\", \"kakao_account.profile\"]");
 
     HttpHeaders infoHeader = new HttpHeaders();
-    headers.add("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
-    headers.add("Authorization", "Bearer " + accessToken);
-    HttpEntity<MultiValueMap<String, String>> requestInfoMap =
-        new HttpEntity<>(body, infoHeader);
+//    headers.add("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
+    infoHeader.add("Authorization", "Bearer " + accessToken);
+    infoHeader.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+    HttpEntity<MultiValueMap<String, String>> requestInfoMap = new HttpEntity<>(body, infoHeader);
 
     ResponseEntity<String> responseInfo =
         restTemplate.exchange(
