@@ -1,3 +1,6 @@
+server:
+  port: 8000
+
 spring:
   config:
     import: optional:file:.env[.properties]
@@ -7,12 +10,28 @@ spring:
     url: ${SPRING_DATASOURCE_URL}
     username: ${SPRING_DATASOURCE_USERNAME}
     password: ${SPRING_DATASOURCE_PASSWORD}
-    driver-class-name: org.mariadb.jdbc.Driver
+    driver-class-name: org.h2.Driver
 
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: create
     properties:
       hibernate:
         format_sql: true
         show_sql: true
+  h2:
+    console:
+      enabled: true
+      path: /h2
+      settings:
+        trace: false
+        web-allow-other: true # 브라우저에서 접근 가능하도록 설정
+
+app:
+  kakao:
+    topic: topic
+    client-id: 447824b81ba04b0ad083424bf68873dc
+    client-secret: X151LH7LbAXZusp9oFo6UaZDQs7psnZO
+  topic: topic
+  client-id: client
+  client-secret: secret
