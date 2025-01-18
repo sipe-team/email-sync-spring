@@ -1,7 +1,10 @@
 package com.sipe.mailSync.oauth2.kakao;
 
 import com.sipe.mailSync.oauth2.AccessTokenResponse;
+import com.sipe.mailSync.user.domain.User;
 import com.sipe.mailSync.user.infra.UserRepository;
+import java.util.Map;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +14,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,7 +44,8 @@ public class OAuth2KakaoController {
 
   @GetMapping
   public ResponseEntity<String> test(
-      @RequestParam("code") String code, @RequestParam("state") String scope) {
+      @RequestParam("code") String code, @RequestParam("state") String state, Authentication authentication) {
+    Object principal = authentication.getPrincipal();
     HttpHeaders headers = new HttpHeaders();
     headers.add("Content-Type", "application/x-www-form-urlencoded");
 
@@ -67,7 +72,7 @@ public class OAuth2KakaoController {
     body.add("property_keys", "[\"kakao_account.email\", \"kakao_account.profile\"]");
 
     HttpHeaders infoHeader = new HttpHeaders();
-//    headers.add("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
+    //    headers.add("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
     infoHeader.add("Authorization", "Bearer " + accessToken);
     infoHeader.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
     HttpEntity<MultiValueMap<String, String>> requestInfoMap = new HttpEntity<>(body, infoHeader);
@@ -76,12 +81,10 @@ public class OAuth2KakaoController {
         restTemplate.exchange(
             "https://kapi.kakao.com/v2/user/me", HttpMethod.POST, requestInfoMap, String.class);
 
-    log.info(responseInfo.toString());
-
-    //    Optional<User> byId = userRepository.findById(state);
+    Optional<User> byId = userRepository.findById(state);
     //    kakaoAccessTokenRepository.save(
-    //        KakaoAccessToken.from(accessTokenResponse.getAccessToken(), "user.getId()",
-    // account_email));
+    //        KakaoAccessToken.from(
+    //            accessTokenResponse.getAccessToken(), state, (String) kakaoAccount.get("email")));
     //    if (byId.isPresent()) {
     //      User user = byId.get();
     //      kakaoAccessTokenRepository.save(
