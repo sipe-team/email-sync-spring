@@ -2,6 +2,7 @@ package com.sipe.mailSync.auth.presentation;
 
 import com.sipe.mailSync.auth.application.AuthService;
 import com.sipe.mailSync.auth.dto.LoginRequest;
+import com.sipe.mailSync.auth.dto.MeResponse;
 import com.sipe.mailSync.auth.dto.RegisterRequest;
 import com.sipe.mailSync.auth.dto.RegisterResponse;
 import com.sipe.mailSync.security.dto.CustomUserDetail;
@@ -46,12 +47,9 @@ public class AuthController {
     @GetMapping("/me")
     public ResponseEntity<?> getUser() {
         try {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            CustomUserDetail userDetails = (CustomUserDetail) authentication.getPrincipal();
-            return ResponseEntity.status(HttpStatus.OK).body(userDetails.getEmail());
+            return ResponseEntity.status(HttpStatus.OK).body(authService.getStatus());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
-
 }
