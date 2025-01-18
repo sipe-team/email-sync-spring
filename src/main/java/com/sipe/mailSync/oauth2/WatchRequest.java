@@ -1,7 +1,10 @@
 package com.sipe.mailSync.oauth2;
 
+import lombok.Data;
+
 import java.util.List;
 
+@Data
 public class WatchRequest {
     private String topicName;
     private List<String> labelIds;
@@ -13,27 +16,4 @@ public class WatchRequest {
         this.labelFilterBehavior = labelFilterBehavior;
     }
 
-    public String getTopicName() {
-        return topicName;
-    }
-
-    public void setTopicName(final String topicName) {
-        this.topicName = topicName;
-    }
-
-    public List<String> getLabelIds() {
-        return labelIds;
-    }
-
-    public void setLabelIds(final List<String> labelIds) {
-        this.labelIds = labelIds;
-    }
-
-    public String getLabelFilterBehavior() {
-        return labelFilterBehavior;
-    }
-
-    public void setLabelFilterBehavior(final String labelFilterBehavior) {
-        this.labelFilterBehavior = labelFilterBehavior;
-    }
 }
