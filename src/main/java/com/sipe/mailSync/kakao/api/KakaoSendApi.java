@@ -32,7 +32,7 @@ public class KakaoSendApi {
                 .subscribe(response -> log.info("Message sent successfully: {}", response),
                         error -> log.error("Final error after retries: {}", error.getMessage(), error));
 
-        return ResponseEntity.ok("HELLO");
+        return ResponseEntity.ok("TEST");
     }
 
     @GetMapping(value = "/self/send")
@@ -40,6 +40,7 @@ public class KakaoSendApi {
 
         kakaoSelfMessageSender.sendSelfMessage(
                 KakaoSelfMessageRequest.builder()
+                        // TODO 엑세스 토큰 연동
 //                            .accessToken(kakaoSelfSendRequest.getAccessToken())
                             .templateObject(
                                     KakaoSelfMessageRequest.TemplateObject.builder()

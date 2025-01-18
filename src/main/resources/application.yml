@@ -15,8 +15,6 @@ spring:
       hibernate:
         format_sql: true
         show_sql: true
-  openapi:
-    key: ${OPEN_API_KEY}
 
 jwt:
   access-token:
@@ -55,3 +53,5 @@ webclient:
     timeout:
       of:
         millis: 100000
+openapi:
+  key: ${OPEN_API_KEY}

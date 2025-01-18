@@ -1,4 +1,4 @@
-package com.sipe.mailSync.infra.webclient;
+package com.sipe.mailSync.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sipe.mailSync.constant.Properties;
