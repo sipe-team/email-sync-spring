@@ -1,8 +1,7 @@
 package com.sipe.mailSync.oauth2.kakao;
 
 import com.sipe.mailSync.oauth2.AccessTokenResponse;
-import com.sipe.mailSync.oauth2.OAuth2InMemoryRepository;
-import com.sipe.mailSync.oauth2.OAuth2Service;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,26 +16,16 @@ import org.springframework.web.client.RestTemplate;
 
 @RequestMapping("/oauth2/kakao")
 @RestController
+@RequiredArgsConstructor
 public class OAuth2KakaoController {
   private static final Logger log = LoggerFactory.getLogger(OAuth2KakaoController.class);
   private final RestTemplate restTemplate;
-  private final OAuth2Service oAuth2Service;
-  private final OAuth2InMemoryRepository oAuth2InMemoryRepository;
 
   @Value("${app.kakao.client-id}")
   private String clientId;
 
   @Value("${app.kakao.client-secret}")
   private String clientSecret;
-
-  public OAuth2KakaoController(
-      final RestTemplate restTemplate,
-      final OAuth2Service oAuth2Service,
-      final OAuth2InMemoryRepository oAuth2InMemoryRepository) {
-    this.restTemplate = restTemplate;
-    this.oAuth2Service = oAuth2Service;
-    this.oAuth2InMemoryRepository = oAuth2InMemoryRepository;
-  }
 
   @GetMapping
   public ResponseEntity<String> test(@RequestParam("code") String code) {
