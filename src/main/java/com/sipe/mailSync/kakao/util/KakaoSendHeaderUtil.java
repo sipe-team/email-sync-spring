@@ -5,7 +5,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 
 @Component
-public class KakaoHeaderUtil {
+public class KakaoSendHeaderUtil {
 
     public HttpHeaders createKakaoHttpHeaders(String accessToken) {
         HttpHeaders httpHeaders = new HttpHeaders();

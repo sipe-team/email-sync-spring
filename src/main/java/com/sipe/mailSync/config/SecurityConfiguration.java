@@ -21,6 +21,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
@@ -33,45 +35,49 @@ public class SecurityConfiguration {
   private final JwtTokenManager jwtTokenManager;
   private final TokenAccessDeniedHandler tokenAccessDeniedHandler;
 
-  @Bean
-  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    http.csrf(AbstractHttpConfigurer::disable) // CSRF 비활성화
-        .formLogin(AbstractHttpConfigurer::disable) // 폼 로그인 비활성
-        .httpBasic(AbstractHttpConfigurer::disable) // 기본 인증 비활성
-        .addFilterBefore(
-            jwtAuthenticationFilter, EmailPasswordAuthenticationFilter.class) // jwt 인증 필터
-        .addFilterAt(
-            new EmailPasswordAuthenticationFilter(
-                authenticationManager(authenticationConfiguration), jwtTokenManager),
-            UsernamePasswordAuthenticationFilter.class) // email - password 로그인 필터
-        .exceptionHandling(
-            exceptions ->
-                exceptions
-                    .authenticationEntryPoint(new RestAuthenticationEntryPoint()) // 인증 진입점 설정
-                    .accessDeniedHandler(tokenAccessDeniedHandler)) // 예외 처리 설정
-        .sessionManagement(
-            session ->
-                session.sessionCreationPolicy(
-                    SessionCreationPolicy.STATELESS)) // 세션 비활성 (HTTP 요청마다 인증 필요)
-        .authorizeHttpRequests(
-            request ->
-                request
-                    .requestMatchers("/**")
-                    .permitAll() // health check
-                    //
-                    // .requestMatchers("/api/auth/*").permitAll()
-                    //                                        .requestMatchers(
-                    //                                                "/swagger-ui/*",
-                    //                                                "/swagger-ui.html",
-                    //                                                "/webjars/**",
-                    //                                                "/v2/**",
-                    //                                                "/v3/**",
-                    //                                                "/swagger-resources/**",
-                    //                                                "/oauth2/**",
-                    //                                                "/h2-console/**").permitAll()
-                    // // swagger 접근 허용
-                    .anyRequest()
-                    .authenticated());
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+                .cors(cors -> {
+                    CorsConfiguration configuration = new CorsConfiguration();
+                    configuration.addAllowedOriginPattern("*");
+                    configuration.setAllowCredentials(true);
+                    configuration.addAllowedHeader("*");
+                    configuration.addAllowedMethod("*");
+                    configuration.addExposedHeader("Authorization");
+                    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+                    source.registerCorsConfiguration("/**", configuration);
+                    cors.configurationSource(source);
+                })
+                .csrf(AbstractHttpConfigurer::disable) // CSRF 비활성화
+                .formLogin(AbstractHttpConfigurer::disable) // 폼 로그인 비활성
+                .httpBasic(AbstractHttpConfigurer::disable) // 기본 인증 비활성
+                .addFilterBefore(jwtAuthenticationFilter, EmailPasswordAuthenticationFilter.class) //jwt 인증 필터
+                .addFilterAt(new EmailPasswordAuthenticationFilter(authenticationManager(authenticationConfiguration), jwtTokenManager), UsernamePasswordAuthenticationFilter.class) //email - password 로그인 필터
+                .exceptionHandling(
+                        exceptions ->
+                                exceptions
+                                        .authenticationEntryPoint(new RestAuthenticationEntryPoint()) // 인증 진입점 설정
+                                        .accessDeniedHandler(tokenAccessDeniedHandler)) // 예외 처리 설정
+                .sessionManagement(
+                        session ->
+                                session.sessionCreationPolicy(
+                                        SessionCreationPolicy.STATELESS)) // 세션 비활성 (HTTP 요청마다 인증 필요)
+                .authorizeHttpRequests(
+                        request ->
+                                request
+                                        .requestMatchers("/**").permitAll() // health check
+//                                        .requestMatchers("/api/auth/*").permitAll()
+//                                        .requestMatchers(
+//                                                "/swagger-ui/*",
+//                                                "/swagger-ui.html",
+//                                                "/webjars/**",
+//                                                "/v2/**",
+//                                                "/v3/**",
+//                                                "/swagger-resources/**",
+//                                                "/oauth2/**",
+//                                                "/h2-console/**").permitAll() // swagger 접근 허용
+                                        .anyRequest().authenticated());
 
     return http.build();
   }

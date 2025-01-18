@@ -2,7 +2,7 @@ package com.sipe.mailSync.kakao.service;
 
 import com.sipe.mailSync.webclient.WebClientService;
 import com.sipe.mailSync.constant.Properties;
-import com.sipe.mailSync.kakao.util.KakaoHeaderUtil;
+import com.sipe.mailSync.kakao.util.KakaoSendHeaderUtil;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -20,11 +20,11 @@ public class KakaoSelfMessageSender {
 
     @Resource
     private final Properties.KakaoApiConfigs kakaoApiConfigs;
-    private final KakaoHeaderUtil kakaoHeaderUtil;
+    private final KakaoSendHeaderUtil kakaoSendHeaderUtil;
     private final WebClientService webClientService;
 
-    public KakaoSelfMessageSender(KakaoHeaderUtil kakaoHeaderUtil, WebClientService webClientService, Properties.KakaoApiConfigs kakaoApiConfigs) {
-        this.kakaoHeaderUtil = kakaoHeaderUtil;
+    public KakaoSelfMessageSender(KakaoSendHeaderUtil kakaoSendHeaderUtil, WebClientService webClientService, Properties.KakaoApiConfigs kakaoApiConfigs) {
+        this.kakaoSendHeaderUtil = kakaoSendHeaderUtil;
         this.webClientService = webClientService;
         this.kakaoApiConfigs = kakaoApiConfigs;
     }
@@ -33,7 +33,7 @@ public class KakaoSelfMessageSender {
         return webClientService.sendPostReturnResponseEntity(
                         kakaoApiConfigs.getKAKAO_BASE_URL(),
                         kakaoApiConfigs.getKAKAO_SEND_ME_API_URI(),
-                        kakaoHeaderUtil.createKakaoHttpHeaders(kakaoSelfMessageRequest.getAccessToken()),
+                        kakaoSendHeaderUtil.createKakaoHttpHeaders(kakaoSelfMessageRequest.getAccessToken()),
                         convertRequestToMultiValueMap(kakaoSelfMessageRequest),
                         KakaoSelfMessageResponse.class
                 ).flatMap(responseEntity -> {
