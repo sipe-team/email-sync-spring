@@ -1,3 +1,5 @@
+server:
+  port: 8000
 spring:
   application:
     name: mailSync
@@ -15,12 +17,25 @@ spring:
       hibernate:
         format_sql: true
         show_sql: true
-
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    driver-class-name: ${DB_DRIVER}
 jwt:
   access-token:
     issuer: sipe
     secret-key: dfkdjfkdjkfjskjflnknvkdnvkdnkvndkvsnkdjkfskdf
     expirationMinute: 30
+
+app:
+  kakao:
+    client-id: 5e3b6128d7ee4e2e43fadcc3a56200bc
+    client-secret: ${KAKAO_SECRET}
+  front-url: ${FRONT_URL}
+  topic: ${GMAIL_TOPIC}
+  client-id: ${GMAIL_CLIENT}
+  client-secret: ${GMAIL_SECRET}
 
 webclient:
   connection:
@@ -53,5 +68,6 @@ webclient:
     timeout:
       of:
         millis: 100000
+
 openapi:
   key: ${OPEN_API_KEY}

@@ -30,10 +30,10 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @RequiredArgsConstructor
 public class SecurityConfiguration {
 
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
-    private final AuthenticationConfiguration authenticationConfiguration;
-    private final JwtTokenManager jwtTokenManager;
-    private final TokenAccessDeniedHandler tokenAccessDeniedHandler;
+  private final JwtAuthenticationFilter jwtAuthenticationFilter;
+  private final AuthenticationConfiguration authenticationConfiguration;
+  private final JwtTokenManager jwtTokenManager;
+  private final TokenAccessDeniedHandler tokenAccessDeniedHandler;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -79,23 +79,23 @@ public class SecurityConfiguration {
 //                                                "/h2-console/**").permitAll() // swagger 접근 허용
                                         .anyRequest().authenticated());
 
-        return http.build();
-    }
+    return http.build();
+  }
 
-    @Bean
-    @ConditionalOnProperty(name = "spring.h2.console.enabled",havingValue = "true")
-    public WebSecurityCustomizer configureH2ConsoleEnable() {
-        return web -> web.ignoring()
-                .requestMatchers(PathRequest.toH2Console());
-    }
+  @Bean
+  @ConditionalOnProperty(name = "spring.h2.console.enabled", havingValue = "true")
+  public WebSecurityCustomizer configureH2ConsoleEnable() {
+    return web -> web.ignoring().requestMatchers(PathRequest.toH2Console());
+  }
 
-    @Bean
-    public BCryptPasswordEncoder bCryptPasswordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+  @Bean
+  public BCryptPasswordEncoder bCryptPasswordEncoder() {
+    return new BCryptPasswordEncoder();
+  }
 
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
-    }
+  @Bean
+  public AuthenticationManager authenticationManager(
+      AuthenticationConfiguration authenticationConfiguration) throws Exception {
+    return authenticationConfiguration.getAuthenticationManager();
+  }
 }

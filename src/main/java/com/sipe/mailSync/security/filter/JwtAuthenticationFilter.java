@@ -21,43 +21,52 @@ import java.io.IOException;
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-    private final JwtTokenManager jwtTokenManager;
-    private final CustomUserDetailsService customUserDetailsService;
+  private final JwtTokenManager jwtTokenManager;
+  private final CustomUserDetailsService customUserDetailsService;
 
-    @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+  @Override
+  protected void doFilterInternal(
+      HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+      throws ServletException, IOException {
 
-        final String requestURI = request.getRequestURI();
-        if (requestURI.contains("api/auth/login") || requestURI.contains("api/auth/register")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
-        String header = request.getHeader("Authorization");
-        String emailFromToken = null;
-        String authToken = null;
-        if (header != null && header.startsWith("Bearer ")) {
-            authToken = header.replace("Bearer ", StringUtils.EMPTY);
-            try {
-                emailFromToken = jwtTokenManager.getEmailFromToken(authToken);
-            } catch (Exception e) {
-            }
-        }
-
-        final SecurityContext securityContext = SecurityContextHolder.getContext();
-
-        if (emailFromToken != null && securityContext.getAuthentication() == null) {
-            final CustomUserDetail userDetails = customUserDetailsService.loadUserByUsername(emailFromToken);
-
-            if (jwtTokenManager.validateToken(authToken, userDetails.getEmail())) {
-                final UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(
-                                userDetails, null, userDetails.getAuthorities());
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                securityContext.setAuthentication(authentication);
-            }
-        }
-
-        filterChain.doFilter(request, response);
+    final String requestURI = request.getRequestURI();
+    if (requestURI.contains("api/auth/login") || requestURI.contains("api/auth/register")) {
+      filterChain.doFilter(request, response);
+      return;
     }
+
+    String header = request.getHeader("Authorization");
+    String emailFromToken = null;
+    String authToken = null;
+    if (header != null && header.startsWith("Bearer ")) {
+      authToken = header.replace("Bearer ", StringUtils.EMPTY);
+      try {
+        emailFromToken = jwtTokenManager.getEmailFromToken(authToken);
+      } catch (Exception e) {
+      }
+    }
+
+    final SecurityContext securityContext = SecurityContextHolder.getContext();
+
+    if (emailFromToken != null && securityContext.getAuthentication() == null) {
+      final CustomUserDetail userDetails =
+          customUserDetailsService.loadUserByUsername(emailFromToken);
+
+      if (jwtTokenManager.validateToken(authToken, userDetails.getEmail())) {
+        final UsernamePasswordAuthenticationToken authentication =
+            new UsernamePasswordAuthenticationToken(
+                userDetails, null, userDetails.getAuthorities());
+        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+        securityContext.setAuthentication(authentication);
+      }
+    }
+
+    filterChain.doFilter(request, response);
+  }
+
+  @Override
+  protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+    String path = request.getRequestURI();
+    return path.startsWith("/oauth2/kakao") || path.startsWith("/login/oauth2/code");
+  }
 }
