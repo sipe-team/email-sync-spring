@@ -1,6 +1,8 @@
 package com.sipe.mailSync.oauth2.kakao;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sipe.mailSync.oauth2.AccessTokenResponse;
+import com.sipe.mailSync.oauth2.OAuth2Attributes;
 import com.sipe.mailSync.user.domain.User;
 import com.sipe.mailSync.user.infra.UserRepository;
 import java.util.Map;
@@ -30,8 +32,9 @@ import org.springframework.web.servlet.view.RedirectView;
 public class OAuth2KakaoController {
   private static final Logger log = LoggerFactory.getLogger(OAuth2KakaoController.class);
   private final RestTemplate restTemplate;
-  private final KakaoAccessTokenRepository kakaoAccessTokenRepository;
+//  private final KakaoAccessTokenRepository kakaoAccessTokenRepository;
   private final UserRepository userRepository;
+  private final KakaoAccessTokenRepository kakaoAccessTokenRepository;
 
   @Value("${app.kakao.client-id}")
   private String clientId;
@@ -44,8 +47,7 @@ public class OAuth2KakaoController {
 
   @GetMapping
   public ResponseEntity<String> test(
-      @RequestParam("code") String code, @RequestParam("state") String state, Authentication authentication) {
-    Object principal = authentication.getPrincipal();
+      @RequestParam("code") String code, @RequestParam("state") String state) {
     HttpHeaders headers = new HttpHeaders();
     headers.add("Content-Type", "application/x-www-form-urlencoded");
 
@@ -77,22 +79,26 @@ public class OAuth2KakaoController {
     infoHeader.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
     HttpEntity<MultiValueMap<String, String>> requestInfoMap = new HttpEntity<>(body, infoHeader);
 
-    ResponseEntity<String> responseInfo =
+    ResponseEntity<OAuth2Attributes> responseInfo =
         restTemplate.exchange(
-            "https://kapi.kakao.com/v2/user/me", HttpMethod.POST, requestInfoMap, String.class);
+            "https://kapi.kakao.com/v2/user/me", HttpMethod.POST, requestInfoMap, OAuth2Attributes.class);
+
+
 
     Optional<User> byId = userRepository.findById(state);
-    //    kakaoAccessTokenRepository.save(
-    //        KakaoAccessToken.from(
-    //            accessTokenResponse.getAccessToken(), state, (String) kakaoAccount.get("email")));
-    //    if (byId.isPresent()) {
-    //      User user = byId.get();
-    //      kakaoAccessTokenRepository.save(
-    //          KakaoAccessToken.from(
-    //              accessTokenResponse.getAccessToken(), user.getId(), user.getEmail()));
-    //    } else {
-    //      throw new IllegalArgumentException("no user exist");
-    //    }
+    kakaoAccessTokenRepository.save(
+        KakaoAccessToken.from(
+            accessTokenResponse.getAccessToken(), state, responseInfo.getBody().kakaoAccount.email));
+    if (byId.isPresent()) {
+      User user = byId.get();
+      kakaoAccessTokenRepository.save(
+          KakaoAccessToken.from(
+              accessTokenResponse.getAccessToken(), user.getId(), user.getEmail()));
+    } else {
+      throw new IllegalArgumentException("no user exist");
+    }
+//    KakaoAccessToken.from()
+//    kakaoAccessTokenRepository.save()
 
     return ResponseEntity.ok().body("");
   }
