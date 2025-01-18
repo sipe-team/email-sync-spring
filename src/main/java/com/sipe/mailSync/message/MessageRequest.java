@@ -4,8 +4,6 @@ import lombok.Data;
 
 @Data
 public class MessageRequest {
-
+    public String email;
     public String message;
-    public String from;
-
 }

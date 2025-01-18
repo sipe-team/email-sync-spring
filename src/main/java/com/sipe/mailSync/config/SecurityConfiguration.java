@@ -6,6 +6,8 @@ import com.sipe.mailSync.security.filter.EmailPasswordAuthenticationFilter;
 import com.sipe.mailSync.security.filter.JwtAuthenticationFilter;
 import com.sipe.mailSync.security.jwt.JwtTokenManager;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -14,6 +16,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -60,10 +63,18 @@ public class SecurityConfiguration {
                                                 "/v2/**",
                                                 "/v3/**",
                                                 "/swagger-resources/**",
-                                                "/error").permitAll() // swagger 접근 허용
+                                                "/oauth2/**",
+                                                "/h2-console/**").permitAll() // swagger 접근 허용
                                         .anyRequest().authenticated());
 
         return http.build();
+    }
+
+    @Bean
+    @ConditionalOnProperty(name = "spring.h2.console.enabled",havingValue = "true")
+    public WebSecurityCustomizer configureH2ConsoleEnable() {
+        return web -> web.ignoring()
+                .requestMatchers(PathRequest.toH2Console());
     }
 
     @Bean
