@@ -1,6 +1,6 @@
 package com.sipe.mailSync.kakao.service;
 
-import com.sipe.mailSync.common.webclient.WebClientService;
+import com.sipe.mailSync.webclient.WebClientService;
 import com.sipe.mailSync.constant.Properties;
 import com.sipe.mailSync.kakao.util.KakaoHeaderUtil;
 import jakarta.annotation.Resource;

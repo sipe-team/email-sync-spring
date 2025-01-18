@@ -1,4 +1,4 @@
-package com.sipe.mailSync.common.webclient;
+package com.sipe.mailSync.webclient;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
