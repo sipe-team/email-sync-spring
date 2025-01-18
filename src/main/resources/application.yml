@@ -1,36 +1,24 @@
-server:
-  port: 8000
-
 spring:
-  config:
-    import: optional:file:.env[.properties]
   application:
-    name: ${SPRING_APPLICATION_NAME}
-  datasource:
-    url: ${SPRING_DATASOURCE_URL}
-    username: ${SPRING_DATASOURCE_USERNAME}
-    password: ${SPRING_DATASOURCE_PASSWORD}
-    driver-class-name: org.h2.Driver
-
+    name: mailSync
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  profiles:
+    active: local
   jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
       ddl-auto: create
     properties:
       hibernate:
         format_sql: true
         show_sql: true
-  h2:
-    console:
-      enabled: true
-      path: /h2
-      settings:
-        trace: false
-        web-allow-other: true # 브라우저에서 접근 가능하도록 설정
 
-app:
-  kakao:
-    client-id: 447824b81ba04b0ad083424bf68873dc
-    client-secret: ${KAKAO_SECRET}
-  topic: ${GMAIL_TOPIC}
-  client-id: ${GMAIL_CLIENT}
-  client-secret: ${GMAIL_SECRET}
+jwt:
+  access-token:
+    issuer: sipe
+    secret-key: dfkdjfkdjkfjskjflnknvkdnvkdnkvndkvsnkdjkfskdf
+    expirationMinute: 30
+

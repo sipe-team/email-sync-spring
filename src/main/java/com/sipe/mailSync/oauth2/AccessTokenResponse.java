@@ -1,6 +1,7 @@
 package com.sipe.mailSync.oauth2;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.sipe.mailSync.oauth2.infra.GoogleToken;
 import lombok.Data;
 
 @Data
@@ -18,5 +19,14 @@ public class AccessTokenResponse {
     private String tokenType;
     @JsonProperty("id_token")
     private String idToken;
+
+    public GoogleToken toEntity(String email,String userId){
+        return GoogleToken.builder()
+                .userId(userId)
+                .email(email)
+                .accessToken(this.accessToken)
+                .refreshToken(this.refreshToken)
+                .build();
+    }
 
 }

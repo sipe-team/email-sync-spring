@@ -1,5 +1,6 @@
 package com.sipe.mailSync.oauth2;
 
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,28 +12,28 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.view.RedirectView;
 
 @RequestMapping("/oauth2")
 @RestController
+@RequiredArgsConstructor
 public class OAuth2Controller {
     private static final Logger log = LoggerFactory.getLogger(OAuth2Controller.class);
 
     @Value("${app.client-id}")
     private String clientId;
+
     @Value("${app.client-secret}")
     private String clientSecret;
+
+    @Value("${app.front-url:http://localhost:3000}")
+    private String frontUrl;
+
     private final RestTemplate restTemplate;
     private final OAuth2Service oAuth2Service;
-    private final OAuth2InMemoryRepository oAuth2InMemoryRepository;
-
-    public OAuth2Controller(final RestTemplate restTemplate, final OAuth2Service oAuth2Service, final OAuth2InMemoryRepository oAuth2InMemoryRepository) {
-        this.restTemplate = restTemplate;
-        this.oAuth2Service = oAuth2Service;
-        this.oAuth2InMemoryRepository = oAuth2InMemoryRepository;
-    }
 
     @GetMapping
-    public ResponseEntity<String> test(@RequestParam String code) {
+    public RedirectView oauth(@RequestParam String code) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/x-www-form-urlencoded");
 
@@ -52,17 +53,16 @@ public class OAuth2Controller {
         );
 
         AccessTokenResponse accessTokenResponse = response.getBody();
-        String email = oAuth2Service.getEmail(accessTokenResponse.getIdToken());
-        oAuth2InMemoryRepository.put(email , accessTokenResponse);
+        oAuth2Service.saveGoogleToken(accessTokenResponse);
         oAuth2Service.registerGmailWatchEvent(accessTokenResponse.getAccessToken());
-        return ResponseEntity.ok("success");
+        return new RedirectView(frontUrl + "?gmailOAuthSuccess=true");
     }
 
     @PostMapping("/access-token/{email}")
     public ResponseEntity<String> getAccessToken(@PathVariable final String email) {
-        AccessTokenResponse res = oAuth2InMemoryRepository.get(email);
-        log.info("accessToken : {}", res.getAccessToken());
-        return ResponseEntity.ok(res.getAccessToken());
+        var accessToken =  oAuth2Service.getAccessTokenByEmail(email);
+        log.info("accessToken : {}", accessToken);
+        return ResponseEntity.ok(accessToken);
     }
 
 }
