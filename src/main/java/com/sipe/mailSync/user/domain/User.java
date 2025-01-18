@@ -5,26 +5,28 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
 @Builder
 @AllArgsConstructor
 @Table(name = "users")
-@NoArgsConstructor
 public class User extends BaseEntity {
-  @Id
-  @GeneratedValue(strategy = GenerationType.UUID)
-  private String id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
 
-  private String username;
+    private String username;
 
-  @Column(unique = true)
-  private String email;
+    @Column(unique = true)
+    private String email;
 
-  private String password;
+    private String password;
 
-  @Enumerated(EnumType.STRING)
-  private UserRole role;
+    @Enumerated(EnumType.STRING)
+    private UserRole role;
+
+    public User(){
+        super();
+    }
 }
