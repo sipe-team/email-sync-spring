@@ -10,7 +10,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -22,6 +21,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
@@ -37,6 +38,17 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+                .cors(cors -> {
+                    CorsConfiguration configuration = new CorsConfiguration();
+                    configuration.addAllowedOriginPattern("*");
+                    configuration.setAllowCredentials(true);
+                    configuration.addAllowedHeader("*");
+                    configuration.addAllowedMethod("*");
+                    configuration.addExposedHeader("Authorization");
+                    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+                    source.registerCorsConfiguration("/**", configuration);
+                    cors.configurationSource(source);
+                })
                 .csrf(AbstractHttpConfigurer::disable) // CSRF 비활성화
                 .formLogin(AbstractHttpConfigurer::disable) // 폼 로그인 비활성
                 .httpBasic(AbstractHttpConfigurer::disable) // 기본 인증 비활성
