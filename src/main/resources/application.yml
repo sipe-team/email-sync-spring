@@ -32,3 +32,6 @@ app:
   topic: ${GMAIL_TOPIC}
   client-id: ${GMAIL_CLIENT}
   client-secret: ${GMAIL_SECRET}
+
+openapi:
+  key: ${OPENAPI_KEY}

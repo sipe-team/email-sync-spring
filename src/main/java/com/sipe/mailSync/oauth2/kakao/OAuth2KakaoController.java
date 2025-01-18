@@ -1,6 +1,10 @@
 package com.sipe.mailSync.oauth2.kakao;
 
 import com.sipe.mailSync.oauth2.AccessTokenResponse;
+import com.sipe.mailSync.oauth2.OAuth2Repository;
+import com.sipe.mailSync.user.domain.User;
+import com.sipe.mailSync.user.infra.UserRepository;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +24,9 @@ import org.springframework.web.client.RestTemplate;
 public class OAuth2KakaoController {
   private static final Logger log = LoggerFactory.getLogger(OAuth2KakaoController.class);
   private final RestTemplate restTemplate;
+  private final KakaoAccessTokenRepository kakaoAccessTokenRepository;
+  private final UserRepository userRepository;
+  private final OAuth2Repository oAuth2Repository;
 
   @Value("${app.kakao.client-id}")
   private String clientId;
@@ -28,7 +35,8 @@ public class OAuth2KakaoController {
   private String clientSecret;
 
   @GetMapping
-  public ResponseEntity<String> test(@RequestParam("code") String code) {
+  public ResponseEntity<String> test(
+      @RequestParam("code") String code, @RequestParam("state") String state) {
     HttpHeaders headers = new HttpHeaders();
     headers.add("Content-Type", "application/x-www-form-urlencoded");
 
@@ -50,7 +58,17 @@ public class OAuth2KakaoController {
             AccessTokenResponse.class);
 
     AccessTokenResponse accessTokenResponse = response.getBody();
-    log.info("access token" + accessTokenResponse.getAccessToken());
+
+    Optional<User> byId = userRepository.findById(state);
+    if (byId.isPresent()) {
+      User user = byId.get();
+      kakaoAccessTokenRepository.save(
+          KakaoAccessToken.from(
+              accessTokenResponse.getAccessToken(), user.getId(), user.getEmail()));
+    } else {
+      throw new IllegalArgumentException("no user exist");
+    }
+
     return ResponseEntity.ok("success");
   }
 }
