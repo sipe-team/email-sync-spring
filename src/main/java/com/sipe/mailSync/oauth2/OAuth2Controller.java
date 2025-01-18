@@ -17,9 +17,9 @@ import org.springframework.web.client.RestTemplate;
 public class OAuth2Controller {
     private static final Logger log = LoggerFactory.getLogger(OAuth2Controller.class);
 
-    @Value("client-id")
+    @Value("${app.client-id}")
     private String clientId;
-    @Value("client-secret")
+    @Value("${app.client-secret}")
     private String clientSecret;
     private final RestTemplate restTemplate;
     private final OAuth2Service oAuth2Service;

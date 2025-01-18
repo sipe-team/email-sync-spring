@@ -18,7 +18,7 @@ public class OAuth2Service {
 
     private final RestTemplate restTemplate;
 
-    @Value("topic")
+    @Value("${app.topic}")
     private String topic;
 
     public OAuth2Service(final RestTemplate restTemplate) {

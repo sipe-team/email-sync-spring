@@ -26,11 +26,7 @@ repositories {
 dependencies {
 	// spring
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-security'
 
-	// db
-	implementation group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.4.1'
 
 	// test
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
