@@ -14,6 +14,8 @@ spring:
       path: /h2-console
   profiles:
     active: local
+  openapi:
+    key: ${OPEN_API_KEY}
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
@@ -28,3 +30,4 @@ jwt:
     issuer: sipe
     secret-key: dfkdjfkdjkfjskjflnknvkdnvkdnkvndkvsnkdjkfskdf
     expirationMinute: 30
+
