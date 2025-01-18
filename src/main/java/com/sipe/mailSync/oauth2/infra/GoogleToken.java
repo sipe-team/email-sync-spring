@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 @Entity
 @Getter
@@ -24,4 +25,9 @@ public class GoogleToken {
     private String accessToken;
     private String refreshToken;
     private String tokenType;
+
+    @Transactional
+    public void updateAccessToken(String accessToken) {
+        this.accessToken = accessToken;
+    }
 }
