@@ -12,6 +12,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.view.RedirectView;
 
 @RequestMapping("/oauth2")
 @RestController
@@ -25,11 +26,14 @@ public class OAuth2Controller {
     @Value("${app.client-secret}")
     private String clientSecret;
 
+    @Value("${app.front-url:http://localhost:3000}")
+    private String frontUrl;
+
     private final RestTemplate restTemplate;
     private final OAuth2Service oAuth2Service;
 
     @GetMapping
-    public ResponseEntity<String> oauth(@RequestParam String code) {
+    public RedirectView oauth(@RequestParam String code) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/x-www-form-urlencoded");
 
@@ -51,7 +55,7 @@ public class OAuth2Controller {
         AccessTokenResponse accessTokenResponse = response.getBody();
         oAuth2Service.saveGoogleToken(accessTokenResponse);
         oAuth2Service.registerGmailWatchEvent(accessTokenResponse.getAccessToken());
-        return ResponseEntity.ok("success");
+        return new RedirectView(frontUrl + "?gmailOAuthSuccess=true");
     }
 
     @PostMapping("/access-token/{email}")

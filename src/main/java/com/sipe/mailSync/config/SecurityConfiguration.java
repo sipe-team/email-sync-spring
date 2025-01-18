@@ -54,17 +54,17 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(
                         request ->
                                 request
-                                        .requestMatchers("/").permitAll() // health check
-                                        .requestMatchers("/api/auth/*").permitAll()
-                                        .requestMatchers(
-                                                "/swagger-ui/*",
-                                                "/swagger-ui.html",
-                                                "/webjars/**",
-                                                "/v2/**",
-                                                "/v3/**",
-                                                "/swagger-resources/**",
-                                                "/oauth2/**",
-                                                "/h2-console/**").permitAll() // swagger 접근 허용
+                                        .requestMatchers("/**").permitAll() // health check
+//                                        .requestMatchers("/api/auth/*").permitAll()
+//                                        .requestMatchers(
+//                                                "/swagger-ui/*",
+//                                                "/swagger-ui.html",
+//                                                "/webjars/**",
+//                                                "/v2/**",
+//                                                "/v3/**",
+//                                                "/swagger-resources/**",
+//                                                "/oauth2/**",
+//                                                "/h2-console/**").permitAll() // swagger 접근 허용
                                         .anyRequest().authenticated());
 
         return http.build();
