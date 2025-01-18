@@ -78,4 +78,9 @@ public class OAuth2Service {
         var response = oAuth2Repository.findByEmail(email).orElseThrow(() -> new RuntimeException("email not found"));
         return response.getAccessToken();
     }
+
+    public String getUserIdByEmail(String email) {
+        var response = oAuth2Repository.findByEmail(email).orElseThrow(() -> new RuntimeException("email not found"));
+        return response.getUserId();
+    }
 }
