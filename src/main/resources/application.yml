@@ -15,6 +15,8 @@ spring:
       hibernate:
         format_sql: true
         show_sql: true
+  openapi:
+    key: ${OPEN_API_KEY}
 
 jwt:
   access-token:
@@ -22,3 +24,34 @@ jwt:
     secret-key: dfkdjfkdjkfjskjflnknvkdnvkdnkvndkvsnkdjkfskdf
     expirationMinute: 30
 
+webclient:
+  connection:
+    timeout:
+      millisecond: 100000
+    provider:
+      name: postmanProvider
+      max:
+        connections: 1000
+      pending:
+        acquire:
+          max:
+            count: -1
+          timeout:
+            second: 100
+  read:
+    timeout:
+      second: 100
+  write:
+    timeout:
+      second: 100
+  provider:
+    max:
+      in:
+        meroty:
+          size:
+            of:
+              byte: 52428800
+  block:
+    timeout:
+      of:
+        millis: 100000
