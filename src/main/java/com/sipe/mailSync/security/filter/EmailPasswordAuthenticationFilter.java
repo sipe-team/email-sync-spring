@@ -27,7 +27,7 @@ public class EmailPasswordAuthenticationFilter extends UsernamePasswordAuthentic
     private final JwtTokenManager jwtTokenManager;
 
     {
-        setFilterProcessesUrl("/api/v1/auth/login");
+        setFilterProcessesUrl("/api/auth/login");
     }
 
     @Override

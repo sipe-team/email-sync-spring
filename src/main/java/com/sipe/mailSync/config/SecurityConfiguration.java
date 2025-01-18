@@ -60,7 +60,7 @@ public class SecurityConfiguration {
                                                 "/v2/**",
                                                 "/v3/**",
                                                 "/swagger-resources/**",
-                                                "/error").permitAll() // swagger 접근 허용
+                                                "/oauth2/**").permitAll() // swagger 접근 허용
                                         .anyRequest().authenticated());
 
         return http.build();

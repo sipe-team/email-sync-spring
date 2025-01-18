@@ -6,6 +6,5 @@ import lombok.Data;
 public class MessageRequest {
 
     public String message;
-    public String from;
 
 }

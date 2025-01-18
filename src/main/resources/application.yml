@@ -6,14 +6,28 @@ spring:
   datasource:
     url: ${SPRING_DATASOURCE_URL}
     username: ${SPRING_DATASOURCE_USERNAME}
-    password: ${SPRING_DATASOURCE_PASSWORD}
-    driver-class-name: org.mariadb.jdbc.Driver
+    password:
+    driver-class-name: org.h2.Driver
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  profiles:
+    active: local
   openapi:
     key: ${OPEN_API_KEY}
-
   jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
-      ddl-auto: none
+      ddl-auto: create
     properties:
       hibernate:
         format_sql: true
+        show_sql: true
+
+jwt:
+  access-token:
+    issuer: sipe
+    secret-key: dfkdjfkdjkfjskjflnknvkdnvkdnkvndkvsnkdjkfskdf
+    expirationMinute: 30
+
