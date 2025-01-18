@@ -52,8 +52,7 @@ public class SummaryService {
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         var requestBody = Map.of(
-            "model", "gpt-4",
-            "temperature", 0.7,
+            "model", "gpt-4o",
             "messages", List.of(Map.of(
                 "role", "user",
                 "content", "이 메일의 내용만 최대 100자로 한글로 요약해줘 : " + bodyMessage
