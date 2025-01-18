@@ -29,9 +29,8 @@ spring:
 
 app:
   kakao:
-    topic: topic
     client-id: 447824b81ba04b0ad083424bf68873dc
-    client-secret: X151LH7LbAXZusp9oFo6UaZDQs7psnZO
-  topic: topic
-  client-id: client
-  client-secret: secret
+    client-secret: ${KAKAO_SECRET}
+  topic: ${GMAIL_TOPIC}
+  client-id: ${GMAIL_CLIENT}
+  client-secret: ${GMAIL_SECRET}
